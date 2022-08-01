@@ -29,6 +29,7 @@ import br.com.spring.loginapi.security.JwtUtil;
 import br.com.spring.loginapi.security.SecurityConfig;
 import br.com.spring.loginapi.service.UserDetailsImpl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -122,6 +123,7 @@ public class LoginController {
 		// Create new user's account
 		Usuario user = new Usuario();
 		user.setCelular(loginCadastro.getCelular());
+		user.setDataCadastro(LocalDateTime.now());
 		user.setEmail(loginCadastro.getEmail());
 		user.setNome(loginCadastro.getNome());
 		user.setSenha(encoder.encode(loginCadastro.getSenha()));
