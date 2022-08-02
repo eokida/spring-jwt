@@ -1,8 +1,10 @@
 package br.com.spring.loginapi.security;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import br.com.spring.loginapi.service.UserDetailsServiceImpl;
 
@@ -46,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.headers().frameOptions().disable();
-		http.cors().and().csrf().disable()
+		http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable()
 			//.addFilterAfter(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
 			.exceptionHandling().authenticationEntryPoint(authEntryPointJwt).and()
 			.authorizeRequests()
@@ -66,6 +71,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	}
+	
+	@Bean
+	private CorsConfigurationSource corsConfigurationSource() {
+	    CorsConfiguration config = new CorsConfiguration();
+	    config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedHeaders(Collections.singletonList(org.springframework.web.cors.CorsConfiguration.ALL));
+	    config.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+	    config.setExposedHeaders(Arrays.asList("Authorization", "content-type"));
+	    
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", config);
+	    return source;
 	}
 
 }
