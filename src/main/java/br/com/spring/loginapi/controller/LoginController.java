@@ -104,7 +104,7 @@ public class LoginController {
 		
     	} catch (BadCredentialsException e) {
     		//throw new BadCredentialsException("Bad credentials for ".concat(login.getLogin()));
-            response = ResponseEntity.accepted().body(new Response("Bad credentials for ".concat(login.getLogin())));
+            response = ResponseEntity.badRequest().body(new Response("Bad credentials for ".concat(login.getLogin())));
         }
 
 		return response;
